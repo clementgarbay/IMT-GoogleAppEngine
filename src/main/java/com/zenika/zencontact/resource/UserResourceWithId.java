@@ -1,11 +1,11 @@
 package com.zenika.zencontact.resource;
 
 import com.zenika.zencontact.domain.User;
-import com.zenika.zencontact.persistence.UserRepository;
 import com.google.gson.Gson;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.zenika.zencontact.persistence.datastore.UserDaoDataStore;
+
 import java.io.IOException;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ public class UserResourceWithId extends HttpServlet {
   private Long getId(HttpServletRequest request) {
     String pathInfo = request.getPathInfo(); // /{id}
     String[] pathParts = pathInfo.split("/");
-    if(pathParts.length == 0) {
+    if (pathParts.length == 0) {
         return null;
     }
     return Long.valueOf(pathParts[1]); // {id}
@@ -28,37 +28,25 @@ public class UserResourceWithId extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     Long id = getId(request);
-    if(id == null) {
+    if (id == null) {
         response.setStatus(404);
         return;
     }
-    Iterable<User> users = UserRepository.USERS;
-    Predicate<User> getUserById = new Predicate<User>() {
-        public boolean apply(User user) {
-            return user.id == id;
-        }
-    };
-    User user = Iterables.find(users, getUserById, null);
+    Optional<User> user = UserDaoDataStore.instance.get(id);
     response.setContentType("application/json; charset=utf-8");
-    response.getWriter().println(new Gson().toJson(user));
+    response.getWriter().println(new Gson().toJson(user.orElseGet(null)));
   }
 
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     Long id = getId(request);
-    if(id == null) {
+    if (id == null) {
         response.setStatus(404);
         return;
     }
     User user = new Gson().fromJson(request.getReader(), User.class);
-    Iterable<User> users = UserRepository.USERS;
-    Predicate<User> getUserById = new Predicate<User>() {
-        public boolean apply(User user) {
-            return user.id == id;
-        }
-    };
-    UserRepository.USERS.set(Iterables.indexOf(users, getUserById), user);
+    UserDaoDataStore.instance.save(user);
     response.setContentType("application/json; charset=utf-8");
     response.getWriter().println(new Gson().toJson(user));
   }
@@ -67,17 +55,11 @@ public class UserResourceWithId extends HttpServlet {
   public void doDelete(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     Long id = getId(request);
-    if(id == null) {
+    if (id == null) {
         response.setStatus(404);
         return;
     }
-    Iterable<User> users = UserRepository.USERS;
-    Predicate<User> getUserById = new Predicate<User>() {
-        public boolean apply(User user) {
-            return user.id == id;
-        }
-    };
-    UserRepository.USERS.remove(Iterables.indexOf(users, getUserById));
+    UserDaoDataStore.instance.delete(id);
   }
 }
 
