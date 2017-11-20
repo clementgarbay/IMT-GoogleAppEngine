@@ -2,6 +2,7 @@ package com.zenika.zencontact.resource;
 
 import com.zenika.zencontact.domain.User;
 import com.google.gson.Gson;
+import com.zenika.zencontact.persistence.UserDao;
 import com.zenika.zencontact.persistence.datastore.UserDaoDataStore;
 
 import java.io.IOException;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "UserResourceWithId", value = "/api/v0/users/*")
 public class UserResourceWithId extends HttpServlet {
+
+  private final UserDao userDao = UserDaoDataStore.instance;
 
   private Long getId(HttpServletRequest request) {
     String pathInfo = request.getPathInfo(); // /{id}
@@ -32,7 +35,7 @@ public class UserResourceWithId extends HttpServlet {
         response.setStatus(404);
         return;
     }
-    Optional<User> user = UserDaoDataStore.instance.get(id);
+    Optional<User> user = userDao.get(id);
     response.setContentType("application/json; charset=utf-8");
     response.getWriter().println(new Gson().toJson(user.orElseGet(null)));
   }
@@ -46,7 +49,7 @@ public class UserResourceWithId extends HttpServlet {
         return;
     }
     User user = new Gson().fromJson(request.getReader(), User.class);
-    UserDaoDataStore.instance.save(user);
+    userDao.save(user);
     response.setContentType("application/json; charset=utf-8");
     response.getWriter().println(new Gson().toJson(user));
   }
@@ -59,7 +62,7 @@ public class UserResourceWithId extends HttpServlet {
         response.setStatus(404);
         return;
     }
-    UserDaoDataStore.instance.delete(id);
+    userDao.delete(id);
   }
 }
 
