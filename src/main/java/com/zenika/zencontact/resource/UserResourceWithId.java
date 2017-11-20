@@ -2,6 +2,7 @@ package com.zenika.zencontact.resource;
 
 import com.zenika.zencontact.domain.User;
 import com.google.gson.Gson;
+import com.zenika.zencontact.domain.blob.PhotoService;
 import com.zenika.zencontact.persistence.UserDao;
 import com.zenika.zencontact.persistence.objectify.UserDaoObjectify;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserResourceWithId extends HttpServlet {
 
   private final UserDao userDao = UserDaoObjectify.getInstance();
+  private final PhotoService photoService = PhotoService.getInstance();
 
   private Long getId(HttpServletRequest request) {
     String pathInfo = request.getPathInfo(); // /{id}
@@ -35,7 +37,8 @@ public class UserResourceWithId extends HttpServlet {
         response.setStatus(404);
         return;
     }
-    Optional<User> user = userDao.get(id);
+    Optional<User> user = userDao.get(id)
+        .map(u -> photoService.prepareDownloadUrl(photoService.prepareUploadUrl(u)));
     response.setContentType("application/json; charset=utf-8");
     response.getWriter().println(new Gson().toJson(user.orElseGet(null)));
   }

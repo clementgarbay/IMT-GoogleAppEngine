@@ -1,5 +1,6 @@
 package com.zenika.zencontact.persistence.objectify;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.zenika.zencontact.domain.User;
@@ -45,5 +46,9 @@ public class UserDaoObjectify implements UserDao {
 
     private Key<User> getKey(Long id) {
         return Key.create(User.class, id);
+    }
+
+    public BlobKey fetchOldBlob(Long id) {
+        return this.get(id).map(user -> user.photoKey).orElse(null); // TODO: do not use orElse of null
     }
 }
