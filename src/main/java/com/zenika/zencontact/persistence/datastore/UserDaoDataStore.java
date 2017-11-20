@@ -2,7 +2,6 @@ package com.zenika.zencontact.persistence.datastore;
 
 import com.google.appengine.api.datastore.*;
 import com.zenika.zencontact.domain.User;
-import com.zenika.zencontact.persistence.UserEntityHelper;
 import com.zenika.zencontact.persistence.UserDao;
 
 import java.util.List;

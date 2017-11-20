@@ -1,4 +1,4 @@
-package com.zenika.zencontact.persistence;
+package com.zenika.zencontact.persistence.datastore;
 
 import com.google.appengine.api.datastore.*;
 import com.zenika.zencontact.domain.User;

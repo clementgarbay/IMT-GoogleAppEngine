@@ -3,7 +3,7 @@ package com.zenika.zencontact.resource;
 import com.zenika.zencontact.domain.User;
 import com.google.gson.Gson;
 import com.zenika.zencontact.persistence.UserDao;
-import com.zenika.zencontact.persistence.datastore.UserDaoDataStore;
+import com.zenika.zencontact.persistence.objectify.UserDaoObjectify;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "UserResource", value = "/api/v0/users")
 public class UserResource extends HttpServlet {
 
-  private final UserDao userDao = UserDaoDataStore.instance;
+  private final UserDao userDao = UserDaoObjectify.getInstance();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
