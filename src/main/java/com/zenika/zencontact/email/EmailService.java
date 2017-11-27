@@ -1,14 +1,11 @@
 package com.zenika.zencontact.email;
 
 import com.zenika.zencontact.domain.Email;
-import com.zenika.zencontact.resource.auth.AuthFilter;
 import com.zenika.zencontact.resource.auth.AuthenticationService;
 
 import javax.mail.*;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +21,7 @@ import static java.util.Objects.isNull;
  */
 public class EmailService {
     private static EmailService ourInstance = new EmailService();
-    private static final Logger LOG = Logger.getLogger(AuthFilter.class.getName());
+    private static final Logger LOG = Logger.getLogger(EmailService.class.getName());
 
     public static EmailService getInstance() {
         return ourInstance;

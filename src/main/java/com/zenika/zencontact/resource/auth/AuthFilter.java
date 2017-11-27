@@ -2,11 +2,9 @@ package com.zenika.zencontact.resource.auth;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;

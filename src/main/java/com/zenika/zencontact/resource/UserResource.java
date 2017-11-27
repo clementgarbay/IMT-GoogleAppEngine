@@ -5,6 +5,7 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.gson.Gson;
 import com.zenika.zencontact.domain.User;
+import com.zenika.zencontact.fetch.PartnerBirthdayService;
 import com.zenika.zencontact.persistence.UserDao;
 import com.zenika.zencontact.persistence.objectify.UserDaoObjectify;
 
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,7 +53,17 @@ public class UserResource extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = new Gson().fromJson(request.getReader(), User.class);
+
+        String birthday = PartnerBirthdayService.getInstance().findBirthday(user.firstName, user.lastName);
+
+        if (birthday != null) {
+            try {
+                user.birthdate(new SimpleDateFormat("yyyy-MM-dd").parse(birthday));
+            } catch (ParseException ignored) {}
+        }
+
         user.id(userDao.save(user));
+
         response.setContentType("application/json; charset=utf-8");
         response.setStatus(201);
         response.getWriter().println(new Gson().toJson(user));
