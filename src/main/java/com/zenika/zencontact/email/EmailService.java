@@ -8,9 +8,16 @@ import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
 
 /**
  * @author Clément Garbay
@@ -27,11 +34,9 @@ public class EmailService {
     }
 
     public void sendEmail(Email email) {
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-
         try {
-            Message msg = new MimeMessage(session);
+            Message msg = buildMessage();
+
             msg.setFrom(new InternetAddress(
                     AuthenticationService.getInstance().getUser().getEmail(),
                     AuthenticationService.getInstance().getUsername()));
@@ -47,5 +52,33 @@ public class EmailService {
             Transport.send(msg);
             LOG.warning("mail envoyé!");
         } catch (MessagingException | UnsupportedEncodingException ignored) {}
+    }
+
+    public void handleEmail(HttpServletRequest request) {
+        try {
+            Message message = buildMessage(request.getInputStream());
+
+            LOG.warning("Subject: " + message.getSubject());
+
+            Multipart multipart = (Multipart) message.getContent();
+            BodyPart part = multipart.getBodyPart(0);
+
+            LOG.warning("Body: " + part.getContent());
+
+            Stream.of(message.getFrom()).forEach(sender -> LOG.warning("From: " + sender.toString()));
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Message buildMessage(InputStream inputStream) throws MessagingException {
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+
+        return isNull(inputStream) ? new MimeMessage(session) : new MimeMessage(session, inputStream);
+    }
+
+    private Message buildMessage() throws MessagingException {
+        return buildMessage(null);
     }
 }
