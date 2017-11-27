@@ -1,6 +1,8 @@
 package com.zenika.zencontact.persistence.datastore;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.zenika.zencontact.domain.User;
 
 import java.util.Date;

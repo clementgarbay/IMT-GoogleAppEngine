@@ -1,7 +1,6 @@
 package com.zenika.zencontact.persistence;
 
 import com.zenika.zencontact.domain.User;
-
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;

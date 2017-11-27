@@ -1,13 +1,14 @@
 package com.zenika.zencontact.resource;
 
+import com.google.gson.Gson;
 import com.zenika.zencontact.domain.Message;
 import org.joda.time.DateTime;
-import com.google.gson.Gson;
-import java.io.IOException;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "HelloResource", value = "/api/message")

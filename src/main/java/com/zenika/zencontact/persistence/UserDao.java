@@ -1,9 +1,9 @@
 package com.zenika.zencontact.persistence;
 
+import com.zenika.zencontact.domain.User;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.zenika.zencontact.domain.User;
 
 public interface UserDao {
 	long save(User contact);
